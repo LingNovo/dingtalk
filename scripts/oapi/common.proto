@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "protos/oapi";
+option csharp_namespace = "DingTalk.Oapi";
+
+package oapi;
+
+// 钉钉开放平台OAPI接口通用响应参数
+message OpenApiResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+}
+
+// 获取钉钉配置信息（JSAPI）请求参数
+message DingTalkConfigRequest {
+	// 需要鉴权的地址
+	string targetUrl = 1;
+}
+
+// 获取钉钉配置信息（JSAPI）相应参数
+message DingTalkConfigResponse {
+	// 当前页面url
+	string targetUrl = 1;
+	// 应用的标识	
+	string agentId = 2;
+	// 企业Id
+	string corpId = 3;
+	// 时间戳
+	string timeStamp = 4;
+	// 随机数
+	string nonceStr = 5;
+	// jsapi_ticket
+	string ticket = 6;
+	// 签名
+	string signature = 7;
+}

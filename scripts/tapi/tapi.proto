@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "protos/tapi";
+option csharp_namespace = "DingTalk.Tapi";
+
+package tapi;
+
+import "role.proto";
+
+service TapiWarpper {
+	// 获取企业中角色下的员工列表
+	rpc RoleSimplelist(RoleSimplelistRequest) returns (RoleSimplelistResponse) {}
+	// 获取企业角色列表
+	rpc RoleList(RoleListRequest) returns (RoleListResponse) {}
+	// 企业在做企业员工管理的时候，需要对部分员工进行角色分类，该接口可以批量为员工增加角色信息
+	rpc AddRolesForEmps(AddRolesForEmpsRequest) returns (AddRolesForEmpsResponse) {}
+	// 企业在做企业员工管理的时候，需要对部分员工进行角色分类，该接口可以批量删除员工的角色信息。 角色在钉钉的组织结构里面就是标签的意思，你可以批量为一批用户添加一批角色信息（dingtalk.corp.role.addrolesforemps），那么调用该接口就可以批量删除已经存在的角色和员工对应关系，角色和员工是多对多的关系。参考代码如下： req.setRolelidList("1,2,3,4,5"); // 已经存在的角色id列表 req.setUseridList("a,b,c,d,e"); // 用户的id列表
+	rpc RemoveRolesForEmps(RemoveRolesForEmpsRequest) returns (RemoveRolesForEmpsResponse) {}
+	// 企业在做企业内部组织结构角色管理的时候，如果需要删除该企业下某个角色信息，可以调用该接口。调用的前提是该角色下面的所有员工都已经被删除该角色
+	rpc DeleteRole(DeleteRoleRequest) returns (DeleteRoleResponse) {}
+	// 该接口通过groupId参数可以获取该角色组详细信息以及下面所有关联的角色的信息
+	rpc GetRoleGroup(GetRoleGroupRequest) returns (GetRoleGroupResponse) {}
+	// 获取角色详情
+	rpc GetRole(GetRoleRequest) returns (GetRoleResponse) {}
+}

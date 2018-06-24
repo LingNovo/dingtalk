@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+option go_package = "protos/oapi";
+option csharp_namespace = "DingTalk.Oapi";
+
+package oapi;
+
+import "google/protobuf/empty.proto";
+import "common.proto";
+import "user.proto";
+import "department.proto";
+import "sns.proto";
+
+service OapiWarpper {
+	// 刷新企业获取的access_token
+    // Access_Token是企业访问钉钉开放平台全局接口的唯一凭证，即调用接口时需携带Access_Token。
+    // 对于企业接入来说，AccessToken需要用CorpID和CorpSecret来换取，CorpID是企业在钉钉中的标识；每个企业拥有一个唯一的CorpID，CorpSecret是企业每个微应用的凭证密钥。
+    // CorpID和CorpSecret可以在开发者后台中找到，
+    // 对于ISV接入来说，可以通过企业对ISV的授权获取企业授权的access_token。
+    // 不同的CorpSecret会返回不同的AccessToken。正常情况下AccessToken有效期为7200秒，有效期内重复获取返回相同结果，并自动续期。
+	rpc RefreshCompanyAccessToken(google.protobuf.Empty) returns (google.protobuf.Empty){}
+	// 刷新 SNS access_token
+    // 普通钉钉用户账号开放
+    // 获取钉钉开放应用的ACCESS_TOKEN
+    // 普通钉钉用户账号开放相关接口和企业应用开发、ISV应用开发无关，第三方web服务提供商取得钉钉开放应用的appid及appsecret后，可以获取开放应用的ACCESS_TOKEN
+	rpc RefreshSNSAccessToken(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+	// 获取钉钉配置信息（JSAPI）
+	rpc DingTalkConfig(DingTalkConfigRequest) returns (DingTalkConfigResponse) {}
+	// 获取用户授权的持久授权码
+	rpc SnsGetPersistentCode(SnsGetPersistentCodeRequest) returns (SnsGetPersistentCodeResponse) {}
+	// 获取用户授权的SNS_TOKEN
+	rpc SnsGetSnsToken(SnsGetSnsTokenRequest) returns (SnsGetSnsTokenResponse) {}
+	// 获取用户授权的个人信息
+	rpc SnsGetUserInfo(SnsGetUserInfoRequest) returns (SnsGetUserInfoResponse) {}
+	// 第三方网站使用钉钉账号登陆
+	rpc SnsAuthorize(SnsAuthorizeRequest) returns (SnsAuthorizeResponse) {}
+	// 第三方网站使用钉钉扫码登陆
+	rpc Qrconnect(QrconnectRequest) returns (QrconnectResponse) {}
+	// 通过Code获取userid
+	rpc UserIdByCode(UserIdByCodeRequest) returns (UserIdByCodeResponse) {}
+	// 通过UnionId获取UserId
+	rpc UserIdByUnionId(UserIdByUnionIdRequest) returns (UserIdByUnionIdResponse) {}
+	// 通过userid获取用户详细信息
+	rpc UserInfoByUserId(UserInfoByUserIdRequest) returns (UserInfoByUserIdResponse) {}
+	// 获取部门成员（简化版）
+	rpc UserSimpleList(UserSimpleListRequest) returns (UserSimpleListResponse){}
+	// 获取部门成员（详情版）
+	rpc UserList(UserListRequest) returns (UserListResponse) {}
+	// 获取管理员列表
+	rpc UserAdminList(google.protobuf.Empty) returns (UserAdminListResponse) {}
+	// 获取管理员的微应用管理权限
+	rpc UserCanAccessMicroapp(UserCanAccessMicroappRequest) returns (UserCanAccessMicroappResponse) {}
+	// 创建成员
+	rpc UserCreate(UserCreateRequest) returns (UserCreateResponse) {}
+	// 更新成员
+	rpc UserUpdate(UserUpdateRequest) returns (OpenApiResponse) {}
+	// 删除成员
+	rpc UserDelete(UserDeleteRequest) returns (OpenApiResponse) {}
+	// 批量删除成员
+	rpc UserBatchDelete(UserBatchDeleteRequest) returns (OpenApiResponse) {}
+	// 获取企业员工人数
+	rpc UserGetOrgUserCount(UserGetOrgUserCountRequest) returns (UserGetOrgUserCountResponse) {}
+	// 获取子部门Id列表
+	rpc SubDepartmentList(SubDepartmentListRequest) returns (SubDepartmentListResponse) {}
+	// 获取部门列表
+	rpc DepartmentList(DepartmentListRequest) returns (DepartmentListResponse) {}
+	// 获取部门详情
+	rpc DepartmentDetail(DepartmentDetailRequest) returns (DepartmentDetailResponse) {}
+	// 创建部门
+	rpc DepartmentCreate(DepartmentCreateRequest) returns (DepartmentCreateResponse) {}
+	// 更新部门
+	rpc DepartmentUpdate(DepartmentUpdateRequest) returns (DepartmentUpdateResponse) {}
+	// 删除部门
+	rpc DepartmentDelete(DepartmentDeleteRequest) returns (OpenApiResponse) {}
+	// 查询部门的所有上级父部门路径
+	rpc DepartmentListParentDeptsByDept(DepartmentListParentDeptsByDeptRequest) returns (DepartmentListParentDeptsByDeptResponse) {}
+	// 查询指定用户的所有上级父部门路径
+	rpc DepartmentListParentDepts(DepartmentListParentDeptsRequest) returns (DepartmentListParentDeptsResponse) {}
+}

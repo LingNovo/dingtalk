@@ -1,0 +1,391 @@
+syntax = "proto3";
+
+option go_package = "protos/oapi";
+option csharp_namespace = "DingTalk.Oapi";
+
+package oapi;
+
+// 通过CODE换取用户身份请求参数
+message UserIdByCodeRequest {
+	// requestAuthCode接口中获取的CODE
+	string code = 1;
+}
+
+// 通过CODE换取用户身份响应参数
+message UserIdByCodeResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 员工在企业内的UserID
+	string userid = 3;
+	// 手机设备号,由钉钉在安装时随机产生
+	string deviceId = 4;
+	// 是否是管理员
+	bool is_sys = 5;
+	// 级别，0：非管理员 1：超级管理员（主管理员） 2：普通管理员（子管理员） 100：老板
+	int32 sys_level = 6;
+}
+
+// 根据unionid获取成员的userid请求参数
+message UserIdByUnionIdRequest {
+	// 用户在当前钉钉开放平台账号范围内的唯一标识，同一个钉钉开放平台账号可以包含多个开放应用，同时也包含ISV的套件应用及企业应用
+	string unionid = 1;
+}
+
+// 根据unionid获取成员的userid响应参数
+message UserIdByUnionIdResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 联系类型
+	string contactType = 3;
+	// 员工唯一标识ID(不可修改)
+	string userid = 4;
+}
+
+// ISV获取用户详情时需要提供的参数
+message DTIsvGetCompanyInfo {
+	// 授权方企业id
+	string auth_corp_id = 1;
+	// 永久授权码
+	string permanent_code = 2;
+	// 授权方（企业）corp_access_token
+	string auth_access_token = 3;
+}
+
+// 通过userid获取用户详细信息请求参数
+message UserInfoByUserIdRequest {
+	// 员工在企业内的UserID，企业用来唯一标识用户的字段。
+	string userid = 1;
+	// 通讯录语言(默认zh_CN，未来会支持en_US)
+	string lang = 2;
+	// ISV获取用户详情时需要提供的参数
+	DTIsvGetCompanyInfo isv_company_info = 3;
+}
+
+// 角色信息（ISV不可见），json数组格式
+message Roles {
+	// 角色id（ISV不可见）
+	string id = 1;
+	// 角色名称（ISV不可见）
+	string name = 2;
+	// 角色分组名称（ISV不可见）
+	string groupName = 3;
+}
+
+// 通过userid获取用户详细信息响应参数
+message UserInfoByUserIdResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 员工唯一标识ID（不可修改）
+	string userid = 3;
+	// 在本 服务窗运营服务商 范围内,唯一标识关注者身份的id（不可修改）
+	string openid = 4;
+	// 成员名称
+	string name = 5;
+	// 分机号（仅限企业内部开发调用）
+	string tel = 6;
+	// 办公地点（ISV不可见）
+	string workPlace = 7;
+	// 备注（ISV不可见）
+	string remark = 8;
+	// 手机号码（ISV不可见）
+	string mobile = 9;
+	// 员工的电子邮箱（ISV不可见）
+	string email = 10;
+	// 员工的企业邮箱，如果员工已经开通了企业邮箱，接口会返回，否则不会返回（ISV不可见）
+	string orgEmail = 11;
+	// 是否已经激活, true表示已激活, false表示未激活
+	bool active = 12;
+	// 在对应的部门中的排序, Map结构的json字符串, key是部门的Id, value是人员在这个部门的排序值
+	string orderInDepts = 13;
+	// 是否为企业的管理员, true表示是, false表示不是
+	bool isAdmin = 14;
+	// 是否为企业的老板, true表示是, false表示不是（【设置负责人】：主管理员登陆钉钉手机客户端 -【通讯录】-【企业名后面的管理】-【企业通讯录】-【负责人设置】进行添加则可。）
+	bool isBoss = 15;
+	// 在当前isv全局范围内唯一标识一个用户的身份,用户无法修改
+	string unionid = 16;
+	// 在对应的部门中是否为主管, Map结构的json字符串, key是部门的Id, value是人员在这个部门中是否为主管, true表示是, false表示不是
+	string isLeaderInDepts = 17;
+	// 是否号码隐藏, true表示隐藏, false表示不隐藏
+	bool isHide = 18;
+	// 成员所属部门id列表
+	repeated int64 department = 19;
+	// 职位信息
+	string position = 20;
+	// 头像url
+	string avatar = 21;
+	// 入职时间
+	int64 hiredDate = 22;
+	// 员工工号
+	string jobnumber = 23;
+	// 扩展属性，可以设置多种属性(但手机上最多只能显示10个扩展属性，具体显示哪些属性，请到OA管理后台->设置->通讯录信息设置和OA管理后台->设置->手机端显示信息设置)
+	map<string,string> extattr = 24;
+	// 手机号码区号
+	string stateCode = 25;
+	// 是否是高管
+	bool isSenior = 26;
+	// 角色信息（ISV不可见），json数组格式
+	repeated Roles roles = 27;
+	// 在钉钉全局范围内唯一标识用户的身份
+	string dingId = 28;
+}
+
+// 获取部门成员请求参数(精简)
+message UserSimpleListRequest {
+	// 通讯录语言(默认zh_CN另外支持en_US)
+	string lang = 1;
+	// 获取的部门id
+	int64 department_id = 2;
+	// 支持分页查询，与size参数同时设置时才生效，此参数代表偏移量
+	int64 offset = 3;
+	// 支持分页查询，与offset参数同时设置时才生效，此参数代表分页大小，最大100
+	int64 size = 4;
+	// 支持分页查询，部门成员的排序规则，默认不传是按自定义排序；entry_asc代表按照进入部门的时间升序，entry_desc代表按照进入部门的时间降序，modify_asc代表按照部门信息修改时间升序，modify_desc代表按照部门信息修改时间降序，custom代表用户定义(未定义时按照拼音)排序
+	string order = 5;
+}
+
+// 简单的成员信息
+message USimpleList {
+	//员工唯一标识Id(不可修改)
+	string userid = 1;
+	//成员名称
+	string name = 2;
+}
+
+// 获取部门成员响应参数(精简)
+message UserSimpleListResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 在分页查询时返回，代表是否还有下一页更多数据
+	bool hasMore = 3;
+	// 成员列表
+	repeated USimpleList userlist = 4;
+}
+
+// 获取部门成员请求参数（详情版）
+message UserListRequest {
+	// 通讯录语言(默认zh_CN另外支持en_US)
+	string lang = 1;
+	// 获取的部门id
+	int64 department_id	= 2;
+	// 支持分页查询，与size参数同时设置时才生效，此参数代表偏移量
+	int64 offset = 3;
+	// 支持分页查询，与offset参数同时设置时才生效，此参数代表分页大小，最大100
+	int32 size = 4;
+	// 支持分页查询，部门成员的排序规则，默认不传是按自定义排序；entry_asc代表按照进入部门的时间升序，entry_desc代表按照进入部门的时间降序，modify_asc代表按照部门信息修改时间升序，modify_desc代表按照部门信息修改时间降序，custom代表用户定义(未定义时按照拼音)排序
+	string order = 5;
+}
+
+// 成员信息详情
+message UDetailedList {
+	// 员工唯一标识ID（不可修改）
+	string userid = 1;
+	// 表示人员在此部门中的排序，列表是按order的倒序排列输出的，即从大到小排列输出的（OA后台里面调整了顺序的话order才有值）
+	int64 order = 2;
+	// 在当前isv全局范围内唯一标识一个用户的身份,用户无法修改
+	string unionid = 3;
+	// 手机号（ISV不可见）
+	string mobile = 4;
+	// 分机号（ISV不可见）
+	string tel = 5;
+	// 办公地点（ISV不可见）
+	string workPlace = 6;
+	// 备注（ISV不可见）
+	string remark = 7;
+	// 是否是企业的管理员, true表示是, false表示不是
+	bool isAdmin	= 8;
+	// 是否为企业的老板, true表示是, false表示不是 （不能通过接口设置,可以通过OA后台设置）
+	bool isBoss = 9;
+	// 是否隐藏号码, true表示是, false表示不是
+	bool isHide = 10;
+	// 是否是部门的主管, true表示是, false表示不是
+	bool isLeader = 11;
+	// 成员名称
+	string name = 12;
+	// 表示该用户是否激活了钉钉
+	bool active = 13;
+	// 成员所属部门id列表
+	repeated int64 department = 14;
+	// 职位信息
+	string position = 15;
+	// 员工的邮箱
+	string email = 16;
+	// 员工的企业邮箱，如果员工的企业邮箱没有开通，返回信息中不包含
+	string orgEmail = 17;
+	// 头像url
+	string avatar = 18;
+	// 员工工号
+	string jobnumber = 19;
+	// 入职时间
+	int64 hiredDate = 20;
+	// 扩展属性，可以设置多种属性(但手机上最多只能显示10个扩展属性，具体显示哪些属性，请到OA管理后台->设置->通讯录信息设置和OA管理后台->设置->手机端显示信息设置)
+	map<string,string> extattr = 21;
+	// 员工在当前企业的唯一标识ID（不可修改）
+	string openId = 22;
+	// 在钉钉全局范围内唯一标识用户的身份
+	string dingId = 23;
+}
+
+// 获取部门成员响应参数（详情版）
+message UserListResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 在分页查询时返回，代表是否还有下一页更多数据
+	bool hasMore = 3;
+	// 成员列表
+	repeated UDetailedList userlist = 4;
+}
+
+// 管理员列表
+message UAdminList {
+	// 员工唯一标识ID（不可修改）
+	int32 sys_level = 1;
+	// 管理员角色 1:主管理员,2:子管理员
+	string userid = 2;
+}
+
+// 获取管理员列表响应参数
+message UserAdminListResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 管理员列表
+	repeated UAdminList admin_list = 3;
+}
+
+// 获取管理员的微应用管理权限请求参数
+message UserCanAccessMicroappRequest {
+	// 微应用id
+	string appId = 1;
+	// 员工唯一标识id
+	string userId = 2;
+}
+
+// 获取管理员的微应用管理权限响应参数
+message UserCanAccessMicroappResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 表示是否能管理该微应用
+	bool canAccess = 3;
+}
+
+// 创建成员请求参数
+message UserCreateRequest {
+	// 员工唯一标识ID（不可修改），企业内必须唯一。长度为1~64个字符，如果不传，服务器将自动生成一个userid
+	string userid = 1;
+	// 成员名称。长度为1~64个字符
+	string name = 2;
+	// 在对应的部门中的排序, Map结构的json字符串, key是部门的Id, value是人员在这个部门的排序值
+	string orderInDepts = 3;
+	// 数组类型，数组里面值为整型，成员所属部门id列表
+	repeated int64 department = 4;
+	// 职位信息。长度为0~64个字符
+	string position = 5;
+	// 手机号码，企业内必须唯一，不可重复
+	string mobile = 6;
+	// 分机号，长度为0~50个字符，企业内必须唯一，不可重复
+	string tel = 7;
+	// 办公地点，长度为0~50个字符
+	string workPlace = 8;
+	// 备注，长度为0~1000个字符
+	string remark = 9;
+	// 邮箱。长度为0~64个字符。企业内必须唯一，不可重复
+	string email = 10;
+	// 员工的企业邮箱，员工的企业邮箱已开通，才能增加此字段， 否则会报错
+	string orgEmail = 11;
+	// 员工工号。对应显示到OA后台和客户端个人资料的工号栏目。长度为0~64个字符
+	string jobnumber = 12;
+	// 是否号码隐藏, true表示隐藏, false表示不隐藏。隐藏手机号后，手机号在个人资料页隐藏，但仍可对其发DING、发起钉钉免费商务电话。
+	bool isHide = 13;
+	// 是否高管模式，true表示是，false表示不是。开启后，手机号码对所有员工隐藏。普通员工无法对其发DING、发起钉钉免费商务电话。高管之间不受影响。
+	bool isSenior = 14;
+	// 是否高管模式，true表示是，false表示不是。开启后，手机号码对所有员工隐藏。普通员工无法对其发DING、发起钉钉免费商务电话。高管之间不受影响。
+	map<string,string> extattr = 15;
+}
+
+// 创建成员响应参数
+message UserCreateResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 员工唯一标识
+	string userid = 3;
+}
+
+// 更新成员请求参数
+message UserUpdateRequest {
+	// 通讯录语言(默认zh_CN另外支持en_US)
+	string lang = 1;
+	// 通讯录语言(默认zh_CN另外支持en_US)
+	string userid = 2;
+	// 成员名称。长度为1~64个字符
+	string name = 3;
+	// 成员所属部门id列表
+	repeated int64 department = 4;
+	// 实际是Map的序列化字符串，Map的Key是deptId，表示部门id，Map的Value是order，表示排序的值，列表是按order的倒序排列输出的，即从大到小排列输出的
+	string orderInDepts = 5;
+	// 职位信息。长度为0~64个字符
+	string position = 6;
+	// 手机号码。企业内必须唯一
+	string mobile = 7;
+	// 分机号，长度为0~50个字符
+	string tel = 8;
+	// 办公地点，长度为0~50个字符
+	string workPlace = 9;
+	// 备注，长度为0~1000个字符
+	string remark = 10;
+	// 邮箱。长度为0~64个字符。企业内必须唯一
+	string email = 11;
+	// 员工的企业邮箱，需要确认员工已经开通企业邮箱，否则会报错
+	string orgEmail = 12;
+	// 员工工号，对应显示到OA后台和客户端个人资料的工号栏目。长度为0~64个字符
+	string jobnumber = 13;
+	// 是否号码隐藏, true表示隐藏, false表示不隐藏。隐藏手机号后，手机号在个人资料页隐藏，但仍可对其发DING、发起钉钉免费商务电话。
+	bool isHide = 14;
+	// 是否号码隐藏, true表示隐藏, false表示不隐藏。隐藏手机号后，手机号在个人资料页隐藏，但仍可对其发DING、发起钉钉免费商务电话。
+	bool isSenior = 15;
+	// 扩展属性，可以设置多种属性(但手机上最多只能显示10个扩展属性，具体显示哪些属性，请到OA管理后台->设置->通讯录信息设置和OA管理后台->设置->手机端显示信息设置)
+	map<string,string> extattr = 16;
+
+}
+
+// 删除成员请求参数
+message UserDeleteRequest {
+	// 员工唯一标识ID（不可修改）
+	string userid = 1;
+}
+
+// 批量删除成员请求参数
+message UserBatchDeleteRequest {
+	// 员工UserID列表。列表长度在1到20之间
+	repeated string useridlist = 1;
+}
+
+// 获取企业员工人数请求参数
+message UserGetOrgUserCountRequest {
+	// 0：包含未激活钉钉的人员数量 1：不包含未激活钉钉的人员数量
+	int32 onlyActive = 1;
+}
+
+// 获取企业员工人数响应参数
+message UserGetOrgUserCountResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 企业员工数量
+	int64 count = 3;
+}

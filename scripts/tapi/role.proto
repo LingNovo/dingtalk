@@ -1,0 +1,201 @@
+syntax = "proto3";
+
+option go_package = "protos/tapi";
+option csharp_namespace = "DingTalk.Tapi";
+
+package tapi;
+
+import "common.proto";
+
+// 获取企业中角色下的员工列表请求参数
+message RoleSimplelistRequest {
+	// 角色ID
+	int64 role_id = 1;
+	// 分页大小
+	int64 size = 2;
+	// 分页偏移
+	int64 offset = 3;
+}
+
+message RoleSimplelistResponseResultListEmpSimpleList {
+	string userid = 1;
+}
+
+message RoleSimplelistResponseResultList {
+	repeated RoleSimplelistResponseResultListEmpSimpleList emp_simple_list = 1;
+}
+
+message RoleSimplelistResponseResult {
+   bool has_more = 1;
+   RoleSimplelistResponseResultList list = 2;
+}
+
+message RoleSimplelist {
+	RoleSimplelistResponseResult result = 1;
+}
+
+// 获取企业中角色下的员工列表响应参数
+message RoleSimplelistResponse {
+	RoleSimplelist dingtalk_corp_role_simplelist_response = 1;
+	TopApiResponse error_response = 2;
+}
+
+// 获取企业角色列表请求参数
+message RoleListRequest {
+	// 分页大小
+	int64 size = 1;
+	// 分页偏移
+	int64 offset = 2;
+}
+
+message RoleListResultListRoleGroupsRolesBody {
+	int64 id = 1;
+	string role_name = 2;
+}
+
+message RoleListResultListRoleGroupsRoles {
+	repeated RoleListResultListRoleGroupsRolesBody roles = 1;
+}
+
+message RoleListResultListRoleGroups {
+	RoleListResultListRoleGroupsRoles roles = 1;
+	string group_name = 2;
+}
+
+message RoleListResultList {
+	repeated RoleListResultListRoleGroups role_groups = 1;
+}
+
+message RoleListResult {
+	string has_more = 1;
+	RoleListResultList list = 2;
+}
+
+message RoleList {
+	RoleListResult result = 1;
+}
+
+// 获取企业角色列表响应参数
+message RoleListResponse {
+	RoleList dingtalk_corp_role_list_response = 1;
+	TopApiResponse error_response = 2;
+}
+
+// 企业在做企业员工管理的时候，需要对部分员工进行角色分类，该接口可以批量为员工增加角色信息
+// 请求参数
+message AddRolesForEmpsRequest {
+	// 角色id list
+	repeated int64 rolelid_list = 1;
+	// 员工id list
+	repeated string userid_list = 2;
+}
+
+message DingOpenResponse {
+	int64 ding_open_errcode = 1;
+	string error_msg = 2;
+	bool success = 3;
+}
+
+message AddRolesForEmps {
+	DingOpenResponse result = 1;
+}
+
+// 企业在做企业员工管理的时候，需要对部分员工进行角色分类，该接口可以批量为员工增加角色信息
+// 响应参数
+message AddRolesForEmpsResponse {
+	AddRolesForEmps dingtalk_corp_role_addrolesforemps_response = 1;
+	TopApiResponse error_response = 2;
+}
+
+// 批量删除员工角的色信息请求参数
+message RemoveRolesForEmpsRequest {
+	// 角色标签id
+	repeated string roleid_list = 1;
+	// 用户userid
+	repeated string userid_list = 2;
+}
+
+message RemoveRolesForEmps {
+	DingOpenResponse result = 1;
+}
+
+// 批量删除员工角的色信息响应参数
+message RemoveRolesForEmpsResponse {
+	RemoveRolesForEmps dingtalk_corp_role_removerolesforemps_response = 1;
+	TopApiResponse error_response = 2;
+}
+
+// 删除角色信息请求参数
+message DeleteRoleRequest {
+	// 角色id
+	int64 role_id = 1;
+}
+
+message DeleteRole {
+	DingOpenResponse result = 1;
+}
+
+// 删除角色信息响应参数
+message DeleteRoleResponse {
+	DeleteRole dingtalk_corp_role_deleterole_response = 1;
+	TopApiResponse error_response = 2;
+}
+
+// 获取角色组信息请求参数
+message GetRoleGroupRequest {
+	// 角色组的id
+	int64 group_id = 1;
+}
+
+message RoleGroupRolesOpenRole {
+	int64 role_id = 1;
+	string role_name = 2;
+}
+
+message RoleGroupRoles {
+	repeated RoleGroupRolesOpenRole open_role = 1;
+}
+
+message RoleGroup {
+	string group_name = 1;
+	RoleGroupRoles roles = 2;
+}
+
+message GetRoleGroupBody {
+	int64 ding_open_errcode = 1;
+	RoleGroup role_group = 2;
+	string error_msg = 3;
+	bool success = 4;
+}
+
+message GetRoleGroup {
+	GetRoleGroupBody result = 1;
+}
+
+// 获取角色组信息响应参数
+message GetRoleGroupResponse {
+	GetRoleGroup dingtalk_corp_role_getrolegroup_response = 1;
+	TopApiResponse error_response = 2;
+}
+
+// 获取角色详情请求参数
+message GetRoleRequest {
+	// 角色id
+	int64 roleId = 1;
+}
+
+message GetRole {
+	string name = 1;
+	int64 groupId = 2;
+}
+
+message GetRoleResponseBody {
+	GetRole role = 1;
+	int64 errcode = 2;
+	string errmsg = 3;
+}
+
+// 获取角色详情响应参数
+message GetRoleResponse {
+	GetRoleResponseBody dingtalk_oapi_role_getrole_response = 1;
+}

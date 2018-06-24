@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "protos/tapi";
+option csharp_namespace = "DingTalk.Tapi";
+
+package tapi;
+
+// 钉钉开放平台TAPI接口通用响应参数
+message TopApiResponse {
+	// 返回码
+	int64 code = 1;
+	// 对返回码的文本描述内容
+	string msg = 2;
+	// sub_code
+	string sub_code = 3;
+	// sub_msg
+	string sub_msg = 4;
+}

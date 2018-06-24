@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+option go_package = "protos/oapi";
+option csharp_namespace = "DingTalk.Oapi";
+
+package oapi;
+
+// 第三方网站使用钉钉账号登陆请求参数
+message SnsAuthorizeRequest {
+	// 重定向地址(需要urlencode编码),该地址所在域名需要配置为appid对应的安全域名，必填
+	string redirectUri = 1;
+	// 用于防止重放攻击，选填
+	string state = 2;
+	// 取值为snsapi_login或snsapi_auth，snsapi_login用于钉钉容器外获取用户授权，snsapi_auth用于钉钉容器内获取用户授权，必填
+	string scope = 3;
+}
+
+// 第三方网站使用钉钉账号登陆响应参数
+message SnsAuthorizeResponse {
+	// 目标地址
+	string TargetUrl = 1;
+}
+
+// 扫码登陆请求参数
+message QrconnectRequest {
+	// 重定向地址(需要urlencode编码),该地址所在域名需要配置为appid对应的安全域名，必填
+	string redirectUri = 1;
+	// 用于防止重放攻击，选填
+	string state = 2;
+}
+
+// 扫码登陆响应参数
+message QrconnectResponse {
+	// 目标地址
+	string TargetUrl = 1;
+}
+
+// 获取用户授权的持久授权码请求参数
+message SnsGetPersistentCodeRequest {
+	// 用户授权给钉钉开放应用的临时授权码
+	string code = 1;
+}
+
+// 获取用户授权的持久授权码响应参数
+message SnsGetPersistentCodeResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 用户在当前开放应用内的唯一标识
+	string openid = 3;
+	// 用户给开放应用授权的持久授权码，此码目前无过期时间
+	string persistent_code = 4;
+	// 用户在当前钉钉开放平台账号范围内的唯一标识，同一个钉钉开放平台账号可以包含多个开放应用，同时也包含ISV的套件应用及企业应用
+	string unionid = 5;
+}
+
+// 获取用户授权的SNS_TOKEN请求参数
+message SnsGetSnsTokenRequest {
+	// 用户的openid
+	string openid = 1;
+	// 用户授权给钉钉开放应用的持久授权码
+	string persistent_code = 2;
+}
+
+// 获取用户授权的SNS_TOKEN响应参数
+message SnsGetSnsTokenResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// sns_token的过期时间
+	int64 expires_in = 3;
+	// 用户授权的token
+	string sns_token = 4;
+}
+
+// 获取用户授权的个人信息请求参数
+message SnsGetUserInfoRequest {
+	// 用户授权给开放应用的token
+	string sns_token = 1;
+}
+
+// sns 用户信息
+message SnsGetUserInfo {
+	// 手机
+	string maskedMobile = 1;
+	// 用户在钉钉上面的昵称
+	string nick = 2;
+	// 用户在当前开放应用内的唯一标识
+	string openid = 3;
+	// 用户在当前开放应用所属的钉钉开放平台账号内的唯一标识
+	string unionid = 4;
+}
+
+// 获取用户授权的个人信息相应参数
+message SnsGetUserInfoResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// sns 用户信息
+	SnsGetUserInfo user_info = 3;
+}

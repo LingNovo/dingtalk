@@ -1,0 +1,223 @@
+syntax = "proto3";
+
+option go_package = "protos/oapi";
+option csharp_namespace = "DingTalk.Oapi";
+
+package oapi;
+
+// 获取子部门ID列表请求参数
+message SubDepartmentListRequest {
+	// 父部门id(如果不传，默认部门为根部门，根部门ID为1)
+	int64 id = 1;
+}
+
+// 获取子部门ID列表响应参数
+message SubDepartmentListResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 子部门ID列表数据
+	repeated int64 sub_dept_id_list = 3;
+}
+
+// 获取部门列表请求参数
+message DepartmentListRequest {
+	// 通讯录语言(默认zh_CN，未来会支持en_US)
+	string lang = 1;
+	// 是否递归部门的全部子部门，ISV微应用固定传递false。
+	bool fetch_child = 2;
+	// 父部门id(如果不传，默认部门为根部门，根部门ID为1)
+	int64 id = 3;
+}
+
+// 部门列表数据。以部门的order字段从小到大排列
+message Department {
+	// 部门id
+	int64 id = 1;
+	// 部门名称
+	string name = 2;
+	// 父部门id，根部门为1
+	int64 parentid = 3;
+	// 是否同步创建一个关联此部门的企业群, true表示是, false表示不是
+	bool createDeptGroup = 4;
+	// 当群已经创建后，是否有新人加入部门会自动加入该群, true表示是, false表示不是
+	bool autoAddUser = 5;
+}
+
+// 获取部门列表响应参数
+message DepartmentListResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 部门列表数据。以部门的order字段从小到大排列
+	Department department = 3;
+}
+
+// 获取部门详情请求参数
+message DepartmentDetailRequest {
+	// 部门id
+	int64 id = 1;
+	// 通讯录语言(默认zh_CN，未来会支持en_US)
+	string lang = 2;
+}
+
+// 获取部门详情响应参数
+message DepartmentDetailResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 部门id
+	int64 id = 3;
+	// 部门名称
+	string name = 4;
+	// 父部门id，根部门为1
+	int64 parentid = 5;
+	// 在父部门中的次序值
+	int64 order = 6;
+	// 是否同步创建一个关联此部门的企业群, true表示是, false表示不是
+	bool createDeptGroup = 7;
+	// 当群已经创建后，是否有新人加入部门会自动加入该群, true表示是, false表示不是
+	bool autoAddUser = 8;
+	// 是否隐藏部门, true表示隐藏, false表示显示
+	bool deptHiding = 9;
+	// 可以查看指定隐藏部门的其他部门列表，如果部门隐藏，则此值生效，取值为其他的部门id组成的的字符串，使用|符号进行分割
+	string deptPermits = 10;
+	// 可以查看指定隐藏部门的其他人员列表，如果部门隐藏，则此值生效，取值为其他的人员userid组成的的字符串，使用|符号进行分割
+	string userPermits = 11;
+	// 是否本部门的员工仅可见员工自己, 为true时，本部门员工默认只能看到员工自己
+	bool outerDept = 12;
+	// 本部门的员工仅可见员工自己为true时，可以配置额外可见部门，值为部门id组成的的字符串，使用|符号进行分割
+	string outerPermitDepts = 13;
+	// 本部门的员工仅可见员工自己为true时，可以配置额外可见人员，值为userid组成的的字符串，使用| 符号进行分割
+	string outerPermitUsers = 14;
+	// 企业群群主
+	string orgDeptOwner = 15;
+	// 部门的主管列表,取值为由主管的userid组成的字符串，不同的userid使用|符号进行分割
+	string deptManagerUseridList = 16;
+	// 部门标识字段，开发者可用该字段来唯一标识一个部门，并与钉钉外部通讯录里的部门做映射
+	string sourceIdentifier = 17;
+	// 部门群是否包含子部门
+	bool groupContainSubDept = 18;
+}
+
+// 创建部门请求参数
+message DepartmentCreateRequest {
+	// 部门名称。长度限制为1~64个字符。不允许包含字符‘-’‘，’以及‘,’。
+	string name = 1;
+	// 父部门id。根部门id为1
+	int64 parentid = 2;
+	// 在父部门中的次序值，order值小的排序靠前。
+	string order = 3;
+	// 是否创建一个关联此部门的企业群，默认为false
+	bool createDeptGroup = 4;
+	// 是否隐藏部门, true表示隐藏, false表示显示
+	bool deptHiding = 5;
+	// 可以查看指定隐藏部门的其他部门列表，如果部门隐藏，则此值生效，取值为其他的部门id组成的的字符串，使用 | 符号进行分割。总数不能超过200。
+	string deptPerimits = 6;
+	// 可以查看指定隐藏部门的其他人员列表，如果部门隐藏，则此值生效，取值为其他的人员userid组成的的字符串，使用| 符号进行分割。总数不能超过200。
+	string userPerimits	 = 7;
+	// 是否本部门的员工仅可见员工自己, 为true时，本部门员工默认只能看到员工自己
+	bool outerDept = 8;
+	// 本部门的员工仅可见员工自己为true时，可以配置额外可见部门，值为部门id组成的的字符串，使用|符号进行分割。总数不能超过200。
+	string outerPermitDepts = 9;
+	// 本部门的员工仅可见员工自己为true时，可以配置额外可见人员，值为userid组成的的字符串，使用|符号进行分割。总数不能超过200。
+	string outerPermitUsers = 10;
+	// 部门标识字段，开发者可用该字段来唯一标识一个部门，并与钉钉外部通讯录里的部门做映射
+	string sourceIdentifier = 11;
+}
+
+// 创建部门响应参数
+message DepartmentCreateResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 创建的部门id
+	int64 id = 3;
+}
+
+// 更新部门请求参数
+message DepartmentUpdateRequest {
+	// 通讯录语言(默认zh_CN另外支持en_US)
+	string lang = 1;
+	// 部门名称。长度限制为1~64个字符。不允许包含字符‘-’‘，’以及‘,’。
+	string name = 2;
+	// 父部门id。根部门id为1
+	int64 parentid = 3;
+	// 在父部门中的次序值。order值小的排序靠前
+	string order = 4;
+	// 部门id
+	int64 id = 5;
+	// 是否创建一个关联此部门的企业群
+	bool createDeptGroup = 6;
+	// 如果有新人加入部门是否会自动加入部门群
+	bool autoAddUser = 7;
+	// 部门的主管列表,取值为由主管的userid组成的字符串，不同的userid使用’| 符号进行分割
+	string deptManagerUseridList = 8;
+	// 是否隐藏部门, true表示隐藏, false表示显示
+	bool deptHiding = 9;
+	// 可以查看指定隐藏部门的其他部门列表，如果部门隐藏，则此值生效，取值为其他的部门id组成的的字符串，使用 | 符号进行分割。总数不能超过200。
+	string deptPerimits = 10;
+	// 可以查看指定隐藏部门的其他人员列表，如果部门隐藏，则此值生效，取值为其他的人员userid组成的的字符串，使用| 符号进行分割。总数不能超过200。
+	string userPerimits = 11;
+	// 是否本部门的员工仅可见员工自己, 为true时，本部门员工默认只能看到员工自己
+	bool outerDept = 12;
+	// 本部门的员工仅可见员工自己为true时，可以配置额外可见部门，值为部门id组成的的字符串，使用|符号进行分割。总数不能超过200。
+	string outerPermitDepts = 13;
+	// 本部门的员工仅可见员工自己为true时，可以配置额外可见人员，值为userid组成的的字符串，使用|符号进行分割。总数不能超过200。
+	string outerPermitUsers = 14;
+	// 企业群群主
+	string orgDeptOwner = 15;
+	// 部门标识字段，开发者可用该字段来唯一标识一个部门，并与钉钉外部通讯录里的部门做映射
+	string sourceIdentifier = 16;
+}
+
+// 更新部门响应参数
+message DepartmentUpdateResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 已经更新的部门id
+	int64 id = 3;
+}
+
+// 更新部门请求参数
+message DepartmentDeleteRequest {
+	// 部门id。（注：不能删除根部门；不能删除含有子部门、成员的部门）
+	int64 id = 1;
+}
+
+// 查询部门的所有上级父部门路径请求参数
+message DepartmentListParentDeptsByDeptRequest {
+	// 希望查询的部门的id，包含查询的部门本身
+	int64 id = 1;
+}
+// 查询部门的所有上级父部门路径响应参数
+message DepartmentListParentDeptsByDeptResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 该部门的所有父部门id列表
+	repeated int64 parentIds = 3;
+}
+
+// 查询指定用户的所有上级父部门路径请求参数
+message DepartmentListParentDeptsRequest {
+	// 希望查询的用户的id
+	string userId = 1;
+}
+
+// 查询指定用户的所有上级父部门路径响应参数
+message DepartmentListParentDeptsResponse {
+	// 返回码
+	int64 errcode = 1;
+	// 对返回码的文本描述内容
+	string errmsg = 2;
+	// 该部门的所有父部门id列表
+	repeated int64 department = 3;
+}
